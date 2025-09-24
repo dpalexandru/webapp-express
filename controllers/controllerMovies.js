@@ -11,4 +11,27 @@ const index = (req, res) => {
 };
 
 
-module.exports = { index };
+// Mostra un singolo film in base all'ID
+const show = (req, res) => {
+    const { id } = req.params;
+
+    const sql = "SELECT * FROM movies WHERE id = ?";
+
+    // uso query parametrizzata
+    connection.query(sql, [id], (err, results) => {
+        if (err) {
+            return res
+                .status(500)
+                .json({ error: "Errore nell'esecuzione della query" });
+        }
+
+        // se non trovo nessun record, rispondo con 404
+        if (results.length === 0) {
+            return res.status(404).json({ error: "Movie not found" });
+        }
+
+        res.json(results[0]);
+    });
+};
+
+module.exports = { index, show };

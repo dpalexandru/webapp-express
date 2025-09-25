@@ -34,4 +34,24 @@ const show = (req, res) => {
     });
 };
 
-module.exports = { index, show };
+// Recupera tutte le recensioni per un dato film
+const getReviewsByMovie = (req, res) => {
+    const { id } = req.params;
+
+    const sql = `
+        SELECT id, name, vote, text, created_at
+        FROM reviews
+        WHERE movie_id = ?
+        ORDER BY created_at DESC
+    `;
+
+    connection.query(sql, [id], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: "Errore nell'esecuzione della query" });
+        }
+
+        res.json(results);
+    });
+};
+
+module.exports = { index, show, getReviewsByMovie };

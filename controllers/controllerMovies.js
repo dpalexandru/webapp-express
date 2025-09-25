@@ -50,4 +50,32 @@ const show = (req, res) => {
     });
 };
 
-module.exports = { index, show };
+// creo una nuova recensione per un film
+const createReview = (req, res) => {
+    const { id: movieId } = req.params;
+    const { name, vote, text } = req.body;
+
+    const sqlInsert = `
+      INSERT INTO reviews (movie_id, name, vote, text, created_at, updated_at)
+      VALUES (?, ?, ?, ?, NOW(), NOW())
+    `;
+
+    connection.query(sqlInsert, [movieId, name, vote, text], (err, result) => {
+        if (err) {
+            return res.status(500).json({ error: "Errore nell'inserimento della recensione" });
+        }
+
+        // costruisco l’oggetto che ritorno
+        const newReview = {
+            id: result.insertId,
+            name,
+            vote,
+            text,
+            created_at: new Date()
+        };
+
+        res.status(201).json(newReview);
+    });
+};
+
+module.exports = { index, show, createReview };

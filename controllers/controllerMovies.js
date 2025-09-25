@@ -34,7 +34,7 @@ const show = (req, res) => {
             SELECT id, name, vote, text, created_at
             FROM reviews
             WHERE movie_id = ?
-            ORDER BY created_at DESC
+            ORDER BY created_at ASC
         `;
 
         connection.query(sqlReviews, [id], (err, reviewResults) => {
